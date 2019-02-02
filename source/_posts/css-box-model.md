@@ -4,7 +4,7 @@ title: CSS Box Model
 
 ## 소개
 
-브라우저는 HTML 문서의 엘리먼트들을 화면에 그리기 위해 각 엘리먼트를 박스(box)로 표현한다. 이 때 모든 HTML 엘리먼트를 둘러싸고 있는 사각형 박스를 **CSS 박스 모델(CSS Box Model)**이라 한다. [CSS 2.1 스펙](https://www.w3.org/TR/CSS2/box.html)에 의하면 박스 모델을 다음처럼 설명하고 있다.
+브라우저는 HTML 문서의 엘리먼트들을 화면에 그리기 위해 각 엘리먼트를 박스(box)로 표현한다. 이 때 모든 HTML 엘리먼트를 둘러싸고 있는 사각형 박스를 **CSS 박스 모델(CSS Box Model)**이라고 한다. [CSS 2.1 스펙](https://www.w3.org/TR/CSS2/box.html)에 의하면 박스 모델을 다음처럼 설명하고 있다.
 
 > *CSS 박스 모델은 문서 트리(document tree)안의 엘리먼트들에 대해 만들어지고, 시각적 형식 모델(visual formatting model)에 따라서 배치되는 사각형 상자를 말한다.* 
 

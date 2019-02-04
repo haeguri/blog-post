@@ -19,7 +19,7 @@ description: 서로 다른 도메인간의 리소스를 공유할 수 있게 하
 2. (Browser) 다른 도메인 서버로 가는 HTTP 요청임을 감지
 3. (Browser) 사전 요청 전송 ( HTTP OPTIONS METHOD )
 4. (Server) 사전 요청에 대한 응답 전송 (  알맞는 헤더가 설정된 응답 )
-5. (Browser) CORS 요청가 가능하다고 판단
+5. (Browser) CORS 요청이 가능하다고 판단함
 6. (Browser) 원래의 HTTP 요청을 계속 함
 
 

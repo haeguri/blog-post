@@ -258,7 +258,7 @@ gulp-example/
 
 Gulp가 `minifyCode` 태스크를 실행하고 난 다음에는 파일 구조가 다음과 같을 것입니다.
 
-```
+```text
 gulp-example/
 |- src/
    |- app.js

@@ -88,3 +88,17 @@ deploy:
   type: git
   repo: https://github.com/haeguri/haeguri.github.io.git
   branch: master
+
+feed:
+  type: atom
+  path: atom.xml
+  limit: 20
+  hub:
+  content:
+  content_limit: 140 # 요약 글자수
+  content_limit_delim: ' '
+
+robotstxt:
+  User-agent: "*"
+  Allow: /
+  Sitemap: https://haeguri.github.io/sitemap.xml

@@ -81,6 +81,8 @@ pagination_dir: page
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
 theme: apollo
+plugins:
+- hexo-generator-robotstxt
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
@@ -99,6 +101,6 @@ feed:
   content_limit_delim: ' '
 
 robotstxt:
-  User-agent: "*"
-  Allow: /
-  Sitemap: https://haeguri.github.io/sitemap.xml
+  useragent: "*"
+  allow: /
+  sitemap: https://haeguri.github.io/sitemap.xml

@@ -1,5 +1,5 @@
 ---
-title: 타입스크립트 Decorator
+title: 타입스크립트의 Decorator 살펴보기
 date: 2019-08-25 20:07:00
 tags:
 - typescript

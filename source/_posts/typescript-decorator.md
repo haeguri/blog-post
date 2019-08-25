@@ -1,5 +1,5 @@
 ---
-title: 타입스크립트 데코레이터 살펴보기
+title: 타입스크립트 Decorator
 date: 2019-08-25 20:07:00
 tags:
 - typescript
@@ -73,7 +73,7 @@ class SomeClass {
     prop = ‘a';
 }
 
-console.log('before in SomeClass');
+console.log('인스턴스가 만들어지기 전');
 console.log(new SomeClass());
 ```
 
@@ -82,7 +82,7 @@ console.log(new SomeClass());
 ```shell
 > factory
 > decorator
-> before instantiate
+> 인스턴스가 만들어지기 전
 ```
 
  실행 결과를 살펴보면 데코레이터는 클래스를 인스턴스화하기 위해 클래스를 호출하기 전에 실행됩니다. 
@@ -225,7 +225,7 @@ const p = createProduct(); // product dependency is {dep1: {…}, dep2: {…}}
 
  메서드에 적용되는 데코레이터는 클래스와 마찬가지로 메서드의 기능을 확장할 수 있습니다. 클래스 데코레이터는 클래스(생성자 함수)를 `extends` 하는 방법으로 기능을 확장할 수 있었지만, 메서드 데코레이터는 메서드의 **Property Descriptor**를 수정하여 메서드를 확장합니다.
 
- **Property Descriptor**는 객체의 프로퍼티들을 기존보다 정교하게 정의할 수 있는 ES5에서 처음 소개된 스펙입니다. 이 Property Descriptor는 `Object.getOwnPropertyDescriptor` 를 사용해서 참조할 수 있습니다. 
+ **Property Descriptor**는 객체의 프로퍼티들을 기존보다 정교하게 정의할 수 있는 ES5에서 처음 소개된 스펙입니다. 이 Property Descriptor는 `Object.getOwnPropertyDescriptor` 를 사용해서 가져올 수 있습니다.
 
 ```typescript
 class Product {
@@ -251,7 +251,7 @@ console.log(descriptor.value === Product.prototype.setPrice); // true
 
 그리고 Property Descriptor 형식의 객체를 반환할 수 있습니다. Property Descriptor 형식의 객체를 반환하지 않더라도 3번 째 인자로 넘어오는 객체를 수정하면 Property Descriptor를 반환하는 것과 같은 동작을 하게 됩니다.
 
-예시로 작성한 `@logging` 메서드 데코레이터는 적용된 메서드에 넘어온 인자들과 메서드가 반환하는 값을 `console.log`로 출력하게 됩니다. 
+예시로 작성한 `@logging` 데코레이터는 적용된 메서드에 넘어온 인자들과 메서드가 반환하는 값을 콘솔로 출력하게 됩니다. 
 
 ```typescript
 function logging(target, name, descriptor) {
@@ -265,7 +265,7 @@ function logging(target, name, descriptor) {
 }
 ```
 
- `@logging` 데코레이터에서는 Property Descriptor를 직접 반환하는 것보다 인자로 넘어온 `descriptor` 객체의 프로퍼티를 직접 수정하는 방식으로 메서드 동작 방법을 변경하였습니다.
+ `@logging` 데코레이터에서는 Property Descriptor를 직접 반환하지 않고, 인자로 넘어온 `descriptor` 객체를 직접 수정하는 방식으로 메서드 동작 방법을 변경하였습니다.
 
 ```typescript
 class Product {
@@ -289,7 +289,7 @@ p.setPrice(1000);
 
 ### Accessor Decorator
 
- Accessor Decorator(접근자 데코레이터)는 `getter`, `setter` 에 적용되는 데코레이터를 말합니다. 데코레이터 함수에서는 메서드 데코레이터와 동일하게 3개의 인자를 받습니다.
+ Accessor Decorator(접근자 데코레이터)는 `getter`, `setter` 에 적용되는 데코레이터를 말합니다. 데코레이터 함수에서는 메서드 데코레이터와 동일한 인자를 받습니다.
 
 1. `static` 메서드라면 클래스의 생성자 함수, 인스턴스의 메서드라면 클래스의  `prototype` 객체
 2. 프로퍼티 이름
@@ -297,7 +297,7 @@ p.setPrice(1000);
 
 접근자 데코레이터도 메서드 데코레이터처럼 인자로 넘어온 Property Descriptor를 변경하거나, 새로운 Property Descriptor를 반환해서 원래 접근자의 기능을 확장할 수 있습니다.
 
-접근자 데코레이터에는 제약이 있는데, 하나의 프로퍼티에 대한 `get`, `set` 메서드에 동일한 데코레이터가 적용될 수 없다는 점입니다. 원래 자바스크립트에서는 하나의 프로퍼티가 `get`, `set`  메서드를 둘 다 가질 수 있습니다.
+접근자 데코레이터에는 제약이 있는데, 하나의 프로퍼티에 대한 `get`, `set` 메서드에 동일한 데코레이터가 적용될 수 없습니다. 원래 자바스크립트에서는 하나의 프로퍼티가 `get`, `set`  메서드를 둘 다 가질 수 있습니다.
 
 ```typescript
 class Product {
@@ -388,13 +388,13 @@ Object.defineProperty(Product.prototype, 'price', {
 1. `static` 으로 선언된 프로퍼티라면 클래스의 생성자 함수, 그게 아니라 인스턴스 프로퍼티람련 클래스의 `prototype` 객체
 2. 프로퍼티 이름
 
-프로퍼티 데코레이터는 메서드 데코레이터와 다르게 데코레이터 함수에 `Property Descriptor` 가 인자로서 제공되지 않습니다. 
+프로퍼티 데코레이터는 메서드 데코레이터와 다르게 데코레이터 함수에 Property Descriptor 가 인자로서 제공되지 않습니다. 
 
-프로퍼티 데코레이터는 `Property Descriptor` 형식의 객체를 반환해서 프로퍼티의 설정을 바꿀 수 있습니다. 두 개의 인자는 다음과 같습니다.
+프로퍼티 데코레이터는 Property Descriptor 형식의 객체를 반환해서 프로퍼티의 설정을 바꿀 수 있습니다. 두 개의 인자는 다음과 같습니다.
 
-> 공식 문서의 프로퍼티 데코레이터를 설명하는 부분에서는 `"the return value is ignored too"`라고 되어있습니다. 이것을 보고 프로퍼티 데코레이터는 반환 값이 무시되는 줄 알았는데, 여러 예제를 살펴본 결과 프로퍼티 데코레이터에서  `Property Descriptor` 형식으로 객체를 반환할 때는, 프로퍼티에 정상적으로 적용되고 있었습니다. 처음에는 문서가 잘못된 것이 아닌가 생각했는데, 관련 이슈(https://github.com/microsoft/TypeScript/issues/32395)를 읽어보니 의도된 문장이라고 하는 것 같습니다.  
+> 공식 문서의 프로퍼티 데코레이터를 설명하는 부분에서는 `"the return value is ignored too"`라고 되어있습니다. 이것을 보고 프로퍼티 데코레이터는 반환 값이 무시되는 줄 알았는데, 여러 예제를 살펴본 결과 프로퍼티 데코레이터에서  Property Descriptor 형식으로 객체를 반환할 때는, 프로퍼티에 정상적으로 적용되고 있었습니다. 처음에는 문서가 잘못된 것이 아닌가 생각했는데, 관련 이슈(https://github.com/microsoft/TypeScript/issues/32395)를 읽어보니 의도된 문장이라고 합니다.
 
- 아래는 `Product`의 `name`, `price` 프로퍼티에  `@readOnly` 데코레이터를 적용한 예제입니다. `@readOnly` 데코레이터는 조건이 주어지면 해당 조건이 `true` 일 때만 프로퍼티를 read-only로 하고, 조건이 주어지지 않으면 무조건 read-only로 하는 데코레이터입니다. 
+ 아래는 `Product`의 `name`, `price` 프로퍼티에  `@readOnly` 데코레이터를 적용한 예제입니다. `@readOnly` 데코레이터는 조건이 주어지면 해당 조건이 `true` 일 때만 프로퍼티를 read-only로 하고, 조건이 주어지지 않으면 무조건 read-only로 설정합니다.
 
 ```typescript
 function readOnly(condition?: () => boolean) {
@@ -432,7 +432,7 @@ p1.price = 3000; // Cannot assign to read only property 'price' of object '#<Pro
 
 함수의 파라미터에 사용되는 파라미터 데코레이터는 세 개의 인자를 받고, 반환값은 무시됩니다. 세 개의 인자는 다음과 같습니다.
 
-1. static 메서드에서 사용되었다면 클래스의 생성자 함수, 보통 메서드에서 사용되었다면 `prototype` 객체
+1. static 메서드에서 사용되었다면 클래스의 생성자 함수, 인스턴스의 메서드에서 사용되었다면 `prototype` 객체
 2. 파라미터 데코레이터가 적용된 메서드의 이름
 3. 메서드 파라미터 목록에서의 index
 

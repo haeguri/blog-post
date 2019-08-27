@@ -6,7 +6,7 @@ tags:
 - decorator
 ---
 
-타입스크립트의 데코레이터를 사용하면 클래스의 메서드, 프로퍼티, 접근자 혹은 함수의 파라미터에 이전에 제공하지 않던 방법으로 새로운 기능을 추가할 수 있습니다. 사실 데코레이터라는 문법은 이미 자바스크립트 표준으로써 논의되고 있는 단계이며 현재는 초안 단계에 있습니다. 자바스크립트를 확장한 언어라고 할 수 있는 타입스크립트에서는 실험적인 기능으로써 데코레이터를 제공하고 있습니다. 
+타입스크립트의 데코레이터를 사용하면 클래스, 프로퍼티, 메서드 등에 이전에는 제공하지 않던 방법으로 새로운 기능을 추가할 수 있습니다. 사실 데코레이터라는 문법은 이미 자바스크립트 표준으로써 논의되고 있는 단계이며 현재는 초안 단계에 있습니다. 자바스크립트를 확장한 언어라고 할 수 있는 타입스크립트에서는 실험적인 기능으로 데코레이터를 제공하고 있습니다. 
 
  ## 시작하기
 
@@ -202,7 +202,7 @@ function inject(...depNames) {
 }
 ```
 
- `@inject` 데코레이터는  `dependencyPool` 이라는 객체로부터, `depNames` 으로 넘어오는 프로퍼티 이름을 가진 디펜던시만골라서 `@inject` 데코레이터가 적용된 클래스의 생성자 함수로 넘겨주는 역할을 합니다. 
+ `@inject` 데코레이터는  `dependencyPool` 이라는 객체로부터, `depNames` 으로 넘어오는 프로퍼티 이름을 가진 디펜던시만 골라 `@inject` 데코레이터가 적용된 클래스의 생성자 함수로 넘겨주는 역할을 합니다. 
 
 ```typescript
 @inject('dep1', 'dep2')
@@ -216,7 +216,8 @@ function createProduct(...args) {
   return new Product(args);
 }
 
-const p = createProduct(); // product dependency is {dep1: {…}, dep2: {…}}
+const p = createProduct(); 
+// product dependency is {dep1: {…}, dep2: {…}}
 ```
 
  `@inject` 를 사용하여 `dependencyPool` 에서 `Product` 클래스에 필요한 의존성인 `'dep1'`, `'dep2'` 를 추가합니다. 그러면 `Product`가 인스턴스화되는 시점에서 필요한 의존성을 주입받을 수 있습니다. 
@@ -235,8 +236,10 @@ class Product {
 }
 
 const descriptor = Object.getOwnPropertyDescriptor(Product.prototype, 'setPrice');
-console.log(descriptor); // {value: ƒ, writable: true, enumerable: false, configurable: true}
-console.log(descriptor.value === Product.prototype.setPrice); // true
+console.log(descriptor); 
+// {value: ƒ, writable: true, enumerable: false, configurable: true}
+console.log(descriptor.value === Product.prototype.setPrice); 
+// true
 ```
 
  `descriptor` 에는 `value`, `enumerable` 등의 키가 들어있는 것을 확인할 수 있습니다. 여기에서 `value` 프로퍼티는 프로퍼티의 값이나 참조를 가지고 있는데, 마지막 출력 결과를 보면 `value`는  `setPrice` 함수에 대한 참조를 가리키고 있습니다. 
@@ -316,7 +319,7 @@ const p = new Product();
 p.price = 123;
 ```
 
- 그런데 타입스크립트에서는 `price` 프로퍼티에 동일한 데코레이터를 적용하려고 하면 컴파일 에러가 발생하고, 실행 결과를 보더라도 `get` 메서드에만 데코레이터가 적용된 것을 확인할 수 있습니다.
+그런데 타입스크립트에서는 `price` 프로퍼티에 동일한 데코레이터를 적용하려고 하면 컴파일 에러가 발생하고, 실행 결과를 보더라도 `get` 메서드에만 데코레이터가 적용된 것을 확인할 수 있습니다.
 
 ```typescript
 function accessorDeco(accessorType) {
@@ -342,7 +345,8 @@ class Product {
   }
 }
 
-const p = new Product(); // decorator for getter
+const p = new Product();
+// decorator for getter
 ```
 
 타입스크립트 문서에서는 하나의 프로퍼티에 `get`, `set` 접근자가 모두 있고, 두 접근자에 동일한 데코레이터가 적용되었을 경우 소스코드 상에서 순서가 앞선 접근자에만 데코레이터가 적용된다고 나와있습니다. 이유는 접근자 데코레이터 또한 Property Descriptor에 적용되는데, 접근자의 Property Descriptor는 `get`, `set` 접근자를 모두 포함할 뿐 각 접근자에 대한 Property Descriptor가 없기 때문입니다.
@@ -385,16 +389,14 @@ Object.defineProperty(Product.prototype, 'price', {
 
  클래스의 프로퍼티 선언에 사용되는 프로퍼티 데코레이터는 두 개의 인자를 받습니다.
 
-1. `static` 으로 선언된 프로퍼티라면 클래스의 생성자 함수, 그게 아니라 인스턴스 프로퍼티람련 클래스의 `prototype` 객체
+1. `static` 프로퍼티라면 클래스의 생성자 함수, 인스턴스 프로퍼티라면 클래스의 `prototype` 객체
 2. 프로퍼티 이름
 
-프로퍼티 데코레이터는 메서드 데코레이터와 다르게 데코레이터 함수에 Property Descriptor 가 인자로서 제공되지 않습니다. 
-
-프로퍼티 데코레이터는 Property Descriptor 형식의 객체를 반환해서 프로퍼티의 설정을 바꿀 수 있습니다. 두 개의 인자는 다음과 같습니다.
+프로퍼티 데코레이터는 메서드 데코레이터와 다르게 데코레이터 함수에 Property Descriptor 가 인자로서 제공되지 않습니다. 대신에 프로퍼티 데코레이터는 Property Descriptor 형식의 객체를 반환해서 프로퍼티의 설정을 바꿀 수 있습니다. 
 
 > 공식 문서의 프로퍼티 데코레이터를 설명하는 부분에서는 `"the return value is ignored too"`라고 되어있습니다. 이것을 보고 프로퍼티 데코레이터는 반환 값이 무시되는 줄 알았는데, 여러 예제를 살펴본 결과 프로퍼티 데코레이터에서  Property Descriptor 형식으로 객체를 반환할 때는, 프로퍼티에 정상적으로 적용되고 있었습니다. 처음에는 문서가 잘못된 것이 아닌가 생각했는데, 관련 이슈(https://github.com/microsoft/TypeScript/issues/32395)를 읽어보니 의도된 문장이라고 합니다.
 
- 아래는 `Product`의 `name`, `price` 프로퍼티에  `@readOnly` 데코레이터를 적용한 예제입니다. `@readOnly` 데코레이터는 조건이 주어지면 해당 조건이 `true` 일 때만 프로퍼티를 read-only로 하고, 조건이 주어지지 않으면 무조건 read-only로 설정합니다.
+아래는 `Product`의 `name`, `price` 프로퍼티에  `@readOnly` 데코레이터를 적용한 예제입니다. 
 
 ```typescript
 function readOnly(condition?: () => boolean) {
@@ -404,7 +406,11 @@ function readOnly(condition?: () => boolean) {
     }
   }
 }
+```
 
+`@readOnly` 데코레이터는 조건이 주어지면 해당 조건이 `true` 일 때만 프로퍼티를 read-only로 하고, 조건이 주어지지 않으면 무조건 read-only로 설정합니다.
+
+```typescript
 class Product {
   @readOnly(() => {
     return new Date > new Date(2020, 0, 1)
@@ -423,7 +429,8 @@ class Product {
 const p1 = new Product('foo', 2000);
 
 p1.name = 'foo';
-p1.price = 3000; // Cannot assign to read only property 'price' of object '#<Product>'
+p1.price = 3000;
+// Cannot assign to read only property 'price' of object '#<Product>'
 ```
 
 `name` 프로퍼티는 2020년 1월 1일이 넘어가면 read-only가 되도록 처리되었고, `price` 프로퍼티는 무조건 read-only가 되어 값을 할당할 경우 에러가 발생하게 됩니다. 
@@ -436,19 +443,14 @@ p1.price = 3000; // Cannot assign to read only property 'price' of object '#<Pro
 2. 파라미터 데코레이터가 적용된 메서드의 이름
 3. 메서드 파라미터 목록에서의 index
 
-아래는 `Product` 클래스의 `setPrice` 메서드에 메서드 데코레이터인 `@validate` 를 적용하고, `setPrice` 메서드의 파라미터에 파라미터 데코레이터인 `@minNumber` 를 적용한 예제입니다. 
-
-> 공식 문서와 다른 자료를 찾아본 결과 파라미터 데코레이터는 다른 데코레이터들처럼 단독으로 사용되는 경우보다 메서드 데코레이터와 함께 사용되는 경우가 많았습니다. 예제 코드를 작성하면서도 파라미터 데코레이터는 메서드 데코레이터와 함께 사용하면 더 좋겠다는 생각이 들었습니다. 
+아래는 메서드 데코레이터인 `@validate`와 파라미터 데코레이터인 `@minNumber`를 작성한 예제입니다. 
 
 ```typescript
 function minNumber(min: number) {
   return function decorator(target, name, index) {
-    target.rules = {
-      minNumber: function(cb) {
-        const value = cb(index);
-        if (value < min) {
-          throw 'not valid!';
-        }
+    target.validators = {
+      minNumber: function(args) {
+        return args[index] >= min;
       }
     }
   }
@@ -457,12 +459,24 @@ function minNumber(min: number) {
 function validate(target, name, descriptor) {
   const originMethod = target[name];
   descriptor.value = function(...args) {
-    Object.keys(target.rules).forEach(ruleName => {
-      target.rules[ruleName]((index) => args[index])
+    Object.keys(target.validators).forEach(key => {
+      if (!target.validators[key](args)) {
+        throw new Error("Not Valid!");
+      }
     })
     originMethod.apply(this, args);
   }
 }
+
+```
+
+> 공식 문서와 다른 자료를 찾아본 결과 파라미터 데코레이터는 다른 데코레이터들처럼 단독으로 사용되는 경우보다 메서드 데코레이터와 함께 사용되는 경우가 많았습니다. 예제 코드를 작성하면서도 파라미터 데코레이터는 메서드 데코레이터와 함께 사용하면 더 좋겠다는 생각이 들었습니다. 
+
+`@minNumber` 파라미터 데코레이터는 파라미터의 최소값을 검사하기 위한 데코레이터입니다. 우선 클래스의 `prototype` 객체에 `validators`라는 객체를 만들고, 이 객체에 파라미터를 검증하기 위한 함수를 추가합니다.
+
+그리고 `@validate` 메서드 데코레이터에서는 `prototype.validators`에 있는 함수들을 실행하는데, 파라미터 데코레이터 함수 안에서 파라미터의 값을 알 수 있도록 전체 인자 목록 `args`을 넘겨줍니다.
+
+```typescript
 
 class Product {
   name: string;
@@ -483,7 +497,8 @@ class Product {
 const p1 = new Product('foo', 2000);
 p1.setPrice(2000);
 p1.setPrice(2001);
-p1.setPrice(1000); // Error. not valid!
+p1.setPrice(1000);
+// Uncaught Error: Not Valid!
 ```
 
- `setPrice` 의 `price` 인자에는 `@minNumber` 데코레이터가 적용되었습니다. 이 데코레이터는 인자로서 전달되는 값이 최소 몇 이상이 맞는지 확인하는 용도입니다. 실행 결과를 보면 `setPrice` 에 2000, 2001을 넘겨줄 때는 잘 실행되지만, 2000보다 작은 1000을 넘겨줄 경우 에러가 발생하는 것을 확인할 수 있습니다. 
+`Product` 클래스에 `@validate` 데코레이터와 `minNumber` 데코레이터를 적용하였습니다. 실행 결과를 보면 `setPrice` 메서드에 2000, 2001을 넘겨줄 때는 잘 실행되지만, 2000보다 작은 1000을 넘겨줄 경우 에러가 발생하는 것을 확인할 수 있습니다. 

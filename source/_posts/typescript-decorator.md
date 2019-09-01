@@ -394,7 +394,7 @@ Object.defineProperty(Product.prototype, 'price', {
 
 프로퍼티 데코레이터는 메서드 데코레이터와 다르게 데코레이터 함수에 Property Descriptor 가 인자로서 제공되지 않습니다. 대신에 프로퍼티 데코레이터는 Property Descriptor 형식의 객체를 반환해서 프로퍼티의 설정을 바꿀 수 있습니다. 
 
-> 공식 문서의 프로퍼티 데코레이터를 설명하는 부분에서는 `"the return value is ignored too"`라고 되어있습니다. 이것을 보고 프로퍼티 데코레이터는 반환 값이 무시되는 줄 알았는데, 여러 예제를 살펴본 결과 프로퍼티 데코레이터에서  Property Descriptor 형식으로 객체를 반환할 때는, 프로퍼티에 정상적으로 적용되고 있었습니다. 처음에는 문서가 잘못된 것이 아닌가 생각했는데, 관련 이슈(https://github.com/microsoft/TypeScript/issues/32395)를 읽어보니 의도된 문장이라고 합니다.
+> 공식 문서의 프로퍼티 데코레이터를 설명하는 부분에서는 `"the return value is ignored too"`라고 되어있습니다. 이것을 보고 프로퍼티 데코레이터는 반환 값이 무시되는 줄 알았는데, 여러 예제를 살펴본 결과 프로퍼티 데코레이터에서  Property Descriptor 형식으로 객체를 반환할 때는, 프로퍼티에 정상적으로 적용되고 있었습니다. 처음에는 문서가 잘못된 것이 아닌가 생각했는데, [관련 이슈](https://github.com/microsoft/TypeScript/issues/32395)를 읽어보니 의도된 문장이라고 합니다.
 
 아래는 `Product`의 `name`, `price` 프로퍼티에  `@readOnly` 데코레이터를 적용한 예제입니다. 
 
@@ -477,7 +477,6 @@ function validate(target, name, descriptor) {
 그리고 `@validate` 메서드 데코레이터에서는 `prototype.validators`에 있는 함수들을 실행하는데, 파라미터 데코레이터 함수 안에서 파라미터의 값을 알 수 있도록 전체 인자 목록 `args`을 넘겨줍니다.
 
 ```typescript
-
 class Product {
   name: string;
   price: number;

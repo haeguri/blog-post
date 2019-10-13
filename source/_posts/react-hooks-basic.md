@@ -86,7 +86,24 @@ useState는 두 개의 요소가 담긴 배열을 반환합니다. 첫 번째 �
 
 만약 새로운 상태가 이전의 상태에 기반하여 계산되어야 하면, 클래스 컴포넌트에서의 `this.setState`처럼 `setState`에 함수를 넘겨줄 수 있습니다.
 
-<iframe src="https://codesandbox.io/embed/usestate-ex-1-3zxv5?fontsize=13&view=split" title="useState-ex-1" allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+```jsx
+import React, { useState } from "react";
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>Current COUNT : {count}</p>
+      <button onClick={() => setCount(prev => prev - 1)}>-</button>
+      <button onClick={() => setCount(prev => prev + 1)}>+</button>
+      <button onClick={() => setCount(0)}>Reset</button>
+    </div>
+  );
+}
+```
+
+[![Edit useCallback-2](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/usestate-ex-1-3zxv5?fontsize=14)
 
 useState의 인자인 **초기값**은 컴포넌트가 처음 렌더링될 때만 사용됩니다. 그런데 복잡한 계산 로직의 결과값이 초기값으로 사용된다면 매번 렌더링될 때마다 계산 로직이 실행되어 연산이 낭비되는 결과를 가져올 수 있습니다. 이때 useState에 함수를 넘기면 그 함수에서 반환하는 값이 초기값으로 사용되고, 함수는 첫 번째 렌더링에서만 실행됩니다.
 
@@ -119,19 +136,109 @@ useEffect는 첫 번째 인자로 사이드 이펙트를 일으킬 함수를 받
 
 어떤 사이드 이펙트들은 **뒤처리(cleaning up)**가 필요한 경우가 있습니다. 예를 들어 데이터를 구독(subscribe)했다면 구독을 해제(unsubsribe)해야 하고, 타이머를 실행했다면 `clearTimeout`로 타이머를 제거해줘야 합니다. 이펙트에 필요한 뒤처리 작업은 useEffect로 전달하는 이펙트에서 **또 다른 함수를 반환**해서 지정할 수 있습니다. 뒤처리 작업은 컴포넌트에서 메모리 누수를 방지하고 다음 이펙트가 실행되기 전 이전의 이펙트를 정리해주는 역할을 합니다.
 
-<iframe src="https://codesandbox.io/embed/useeffect-ex-1-oljbc?fontsize=13&view=split" title="useEffect-ex-1" allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+```jsx
+import React, { useState, useEffect } from "react";
 
-그런데 앞서 말한 것처럼, 위의 코드처럼 디펜던시 목록을 넘겨주지 않으면, 컴포넌트가 렌더링될 때마다 이펙트와 이펙트에 대한 뒤처리가 실행됩니다. 위에서 `title` 필드를 변경하면, `App` 컴포넌트가 다시 렌더링되고, 타이머와 관련된 이펙트와 이펙트의 뒤처리가 계속해서 실행됩니다. 이때 이펙트와 관련된 디펜던시가 변경되었을 때만 넘겨줘서 useEffect가 이펙트가 되게 할 수 있습니다.
+function App() {
+  const [count, setCount] = useState(0);
+  const [title, setTitle] = useState("");
+
+  useEffect(() => {
+    console.log("[effect] setInterval");
+    const timerId = setInterval(() => {
+      console.log(count);
+    }, 1000);
+
+    return () => {
+      console.log("[cleaning up] clearInterval");
+      clearInterval(timerId);
+    };
+  });
+
+  return (
+    <div>
+      Title : <input value={title} onChange={e => setTitle(e.target.value)} />
+      <p>Current COUNT : {count}</p>
+      <button onClick={() => setCount(prev => prev - 1)}>-</button>
+      <button onClick={() => setCount(prev => prev + 1)}>+</button>
+      <button onClick={() => setCount(0)}>Reset</button>
+    </div>
+  );
+}
+```
+
+[![Edit Code](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/useeffect-ex-1-oljbc?fontsize=14)
+
+위의 코드처럼 useEffect의 두 번째 인자로 디펜던시 목록을 넘겨주지 않으면, 컴포넌트가 렌더링될 때마다 이펙트와 이펙트에 대한 뒤처리가 실행됩니다. 위에서 `title` 필드를 변경하면, `App` 컴포넌트가 다시 렌더링되고, 타이머와 관련된 이펙트와 이펙트의 뒤처리가 계속해서 실행됩니다. 이때 이펙트와 관련된 디펜던시가 변경되었을 때만 넘겨줘서 useEffect가 이펙트가 되게 할 수 있습니다.
 
 #### 특정 조건에서 이펙트 실행
 
- <iframe src="https://codesandbox.io/embed/useeffect-ex-2-1678x?fontsize=13&view=split" title="useEffect-ex-2" allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+```jsx
+import React, { useState, useEffect } from "react";
+
+function App() {
+  const [count, setCount] = useState(0);
+  const [title, setTitle] = useState("");
+
+  useEffect(() => {
+    console.log("[effect] setInterval");
+    const timerId = setInterval(() => {
+      console.log(count);
+    }, 1000);
+
+    return () => {
+      console.log("[cleaning up] clearInterval");
+      clearInterval(timerId);
+    };
+  }, [count]);
+
+  return (
+    <div>
+      Title : <input value={title} onChange={e => setTitle(e.target.value)} />
+      <p>Current COUNT : {count}</p>
+      <button onClick={() => setCount(prev => prev - 1)}>-</button>
+      <button onClick={() => setCount(prev => prev + 1)}>+</button>
+      <button onClick={() => setCount(0)}>Reset</button>
+    </div>
+  );
+}
+```
+
+[![Edit Code](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/useeffect-ex-2-1678x?fontsize=14)
 
 위의 예제에서는 디펜던시 목록으로 `[count]` 를 넘겨줘서 `count` 가 변경되었을 때만 이펙트가 다시 실행되도록 하였습니다. 앞의 예제와 다르게 `Title` 을 변경한다고 해서 이펙트가 다시 실행되지는 않습니다.
 
 만약 클래스 컴포넌트의 `componentDidMount` 혹은 `componentWillUnmount` 메서드처럼, 컴포넌트가 처음 렌더링될 때와 마지막으로 컴포넌트가 제거될 때 실행하고 싶은 이펙트는 어떻게 정의할까요? 두 번째 인자로 빈 배열을 넘겨주면 됩니다.
 
- <iframe src="https://codesandbox.io/embed/useeffect-ex-3-26dgt?fontsize=13&view=split" title="useEffect-ex-3" allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+```jsx
+import React, { useState, useEffect } from "react";
+
+function App() {
+  const [isShowPannel, setIsShowPannel] = useState(true);
+  return (
+    <div>
+      <button onClick={() => setIsShowPannel(!isShowPannel)}>
+        toggle pannel
+      </button>
+      <hr />
+      {isShowPannel && <Pannel />}
+    </div>
+  );
+}
+
+function Pannel() {
+  useEffect(() => {
+    console.log("component did mount");
+
+    return () => {
+      console.log("component will unmount");
+    };
+  }, []);
+  return <div>Pannel</div>;
+}
+```
+
+[![Edit Code](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/useeffect-ex-3-26dgt?fontsize=14)
 
 예제를 보면 버튼을 클릭하여 `Pannel` 컴포넌트가 보일 때는 콘솔에 `component did mount` 라는 메시지가 출력되고, 컴포넌트가 사라질 때는 `component will unmount`라는 메시지가 출력되는 것을 확인할 수 있습니다. 이것이 가능한 이유는 빈 배열을 넘겼을 때 특별한 동작을 하도록 설계된 것은 아니고, 단순히 useEffect가 디펜던시 목록에 기반하여 이펙트를 실행하는 원리에 기반한 것입니다.
 
@@ -200,7 +307,57 @@ const [state, dispatch] = useReducer(reducer, { count: initialCount });
 
 useState처럼 useReducer도 초기 상태를 계산하기 위한 함수를 사용할 수 있습니다. useReducer의 세 번째 인자인 `init`으로 초기 상태를 반환하는 함수를 넘겨주면 됩니다. 단, 이 경우 두 번째 인자인 `initialState`를 기반으로 만들어지는데, `init(initialState)`의 결과값이 초기 상태로 설정됩니다.
 
-<iframe src="https://codesandbox.io/embed/usereducer-ex-1-i2g91?fontsize=13&view=split" title="useReducer-ex-1" allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+```jsx
+import React, { useReducer } from "react";
+
+function App() {
+  return <Counter initialCount={0} />;
+}
+
+function init(initialCount) {
+  return {
+    count: initialCount
+  };
+}
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "increment":
+      return {
+        count: state.count + 1
+      };
+    case "decrement":
+      return {
+        count: state.count - 1
+      };
+    case "reset":
+      return init(action.payload);
+    default:
+      throw new Error("not valid action type");
+  }
+}
+
+function Counter({ initialCount }) {
+  const [state, dispatch] = useReducer(reducer, initialCount, init);
+  console.log(initialCount);
+  console.log(state);
+
+  return (
+    <div>
+      <p>Current COUNT : {state.count}</p>
+      <button onClick={() => dispatch({ type: "decrement" })}>-</button>
+      <button onClick={() => dispatch({ type: "increment" })}>+</button>
+      <button
+        onClick={() => dispatch({ type: "reset", payload: initialCount })}
+      >
+        Reset
+      </button>
+    </div>
+  );
+}
+```
+
+[![Edit Code](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/usereducer-ex-1-i2g91?fontsize=14)
 
 마지막으로 useState처럼 useReducer도 현재 상태와 이전의 상태가 같다면 리액트는 자식 컴포넌트를 리-렌더링하지 않고, 이펙트도 발생시키지 않습니다.
 
@@ -220,7 +377,47 @@ const memoizedCallback = useCallback(() => {
 
 아래의 예제는 디펜던시 목록에 정의된 것 중 하나가 변경되었을 때만 새로운 콜백 함수를 생성하는지 테스트하기 위한 예제입니다. 예제에서는 `firstname`, `lastname` 두 개의 인풋이 있는데, `firstname`이 변경될 때만 useCallback으로 새로운 콜백 함수를 생성하는 것을 확인할 수 있습니다.
 
-<iframe src="https://codesandbox.io/embed/usecallback-2-8zpvw?fontsize=13&view=split" title="useCallback-2" allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+```jsx
+import React, { useState, useCallback, useMemo } from "react";
+
+let prev;
+
+function App() {
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+
+  const handleFirstnameChange = useMemo(() => {
+    console.log("handleFirstnameChange is recreated");
+    return e => {
+      setFirstname(e.target.value);
+      console.log("previous firstname", firstname);
+    };
+  }, [firstname]);
+
+  const handleLastnameChange = useCallback(
+    e => {
+      setLastname(e.target.value);
+      console.log("previous lastname", lastname);
+    },
+    [lastname]
+  );
+
+  if (prev !== undefined && prev !== handleLastnameChange) {
+    console.log("handleLastnameChange recreated by lastname change");
+  }
+
+  prev = handleLastnameChange;
+
+  return (
+    <div>
+      <input onChange={handleFirstnameChange} value={firstname} />
+      <input onChange={handleLastnameChange} value={lastname} />
+    </div>
+  );
+}
+```
+
+[![Edit Code](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/usecallback-2-8zpvw?fontsize=14)
 
 ### 6. useMemo
 

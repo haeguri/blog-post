@@ -123,7 +123,7 @@ describe("Tetris", () => {
 
 `jest.useFakeTimers()`를 실행하면 `setTimeout`, `setInterval`, `clearTimeout`, `clearInterval` 등의 네이티브 함수들이 Jest 타이머로 대체된다. 즉, 테스트 코드로 실행되는 타이머가 Jest 타이머가 된다.
 
-`jest.advanceTimersByTime(ms)`은 모든 타이머들이 `ms` 밀리세컨드 만큼 시간이 경과되도록 한다. 이 코드를 통해 `ms` 밀리세컨드 후에 실행되어야 하는 콜백 함수들이 실행되는 것을 보장할 수 있다.
+`jest.advanceTimersByTime(ms)`은 모든 타이머가 `ms` 밀리세컨드만큼 시간이 지나가게 한다. 이 코드를 통해 `ms` 밀리세컨드 후에 실행되어야 하는 콜백 함수들이 실행되는 것을 보장할 수 있다.
 
 마지막으로 `jest.clearAllTimers()`로 테스트 케이스가 실행된 후 Mock 타이머를 정리해서 테스트가 독립적으로 실행되는 것을 보장해줄 수 있다.
 

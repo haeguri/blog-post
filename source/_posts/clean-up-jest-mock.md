@@ -174,19 +174,17 @@ class ModuleMocker {
 }
 ```
 
-지금까지는 `mockFn` 으로 직접 mock 함수를 정리하는 방법을 살펴봤다. 다음으로는 `jest` 객체에서 mock을 정리하는 방법을 살펴보자.
-
 ### `jest`로 mock 정리하기
 
-Jest에서 제공하는 객체인 `jest`를 활용하면 `mockFn` 에서 일일이 mock 정리하는 번거로움을 조금 줄일 수 있다.
+Jest에서 제공하는 객체인 `jest`를 활용하면 `mockFn`마다 mock을 정리하는 번거로움을 조금 줄일 수 있다.
 
-- `jest.clearAllMocks` : 모든 mock 함수에서 `mockFn.clearAllMocks` 을 호출하는 것과 동일하다.
-- `jest.resetAllMocks` : 모든 mock 함수에서 `mockFn.resetAllMocks` 을 호출하는 것과 동일하다.
-- `jest.restoreAllMocks` : 모든 mock 함수에서 `mockFn.restoreAllMocks` 을 호출하는 것과 동일하다.
+- `jest.clearAllMocks` : 모든 mock 함수에서 `mockFn.clearAllMocks` 을 호출한다.
+- `jest.resetAllMocks` : 모든 mock 함수에서 `mockFn.resetAllMocks` 을 호출한다.
+- `jest.restoreAllMocks` : 모든 mock 함수에서 `mockFn.restoreAllMocks` 을 호출한다.
 
 ## 자동으로 정리하기
 
-확실히 `jest.clearAllMocks`, `jest.resetAllMocks`, `jest.restoreAllMocks` 를 호출하는 것이 `mockFn` 의 메서드를 직접 호출하는 것보다는 쉬운 방법이다. 하지만 이 방법도 `afterEach`, `beforeEach` 와 같은 방법으로 테스트 케이스가 실행되기 전이나 후에 호출해줘야 하는 번거로움이 있다.
+확실히 `jest` 객체에 있는 메서드를 사용하는 것이 `mockFn`에 있는 정리 메서드를 직접 호출하는 것보다는 쉬운 방법이다. 하지만 여전히 `afterEach`, `beforeEach` 와 같은 함수로 테스트 케이스가 실행되기 전이나, 후에 정리해줘야 하는 번거로움이 있다.
 
 ```javascript
 beforeEach(() => {
@@ -202,13 +200,13 @@ test("테스트 케이스 2", () => {
 });
 ```
 
-이것보다 더 쉬운 방법은 `jest.config.js` 설정값을 변경하는 것이다. 설정을 수정하면 테스트 케이스를 실행하기 전에 알아서 mock이 정리되게 할 수 있다.
+가장 간단한 방법은 `jest.config.js` 설정값을 변경하는 것이다. Jest 설정을 수정해서 테스트 케이스를 실행하기 전에 알아서 mock이 정리되게 할 수 있다.
 
-- `clearMocks` (default `false`): `jest.clearAllMocks` 를 각 테스트 케이스를 실행하기 전에 호출하는 것과 동일하다.
-- `resetMocks` (default `false`): `jest.restAllMocks` 를 각 테스트 케이스를 실행하기 전에 호출하는 것과 동일하다.
-- `restoreMocks` (default `false`): `jest.restoreAllMocks` 를 각 테스트 케이스를 실행하기 전에 호출하는 것과 동일하다.
+- `clearMocks` (default `false`): `jest.clearAllMocks` 를 각 테스트 케이스를 실행하기 전에 호출한다.
+- `resetMocks` (default `false`): `jest.restAllMocks` 를 각 테스트 케이스를 실행하기 전에 호출한다.
+- `restoreMocks` (default `false`): `jest.restoreAllMocks` 를 각 테스트 케이스를 실행하기 전에 호출한다.
 
-앞에서 설명한 것처럼 `restore` 작업에는 `reset`, `clear` 가 포함되어 있다. 따라서 편하게 mock을 정리하고 싶다면 `jest.config.js`에서는 `restoreMocks`만 활성화해도 된다.
+앞에서 설명한 것처럼 `restore` 작업에는 `reset`, `clear` 가 포함되어 있다. 따라서 편하게 mock을 정리하고 싶다면 `jest.config.js`에서 `restoreMocks`만 활성화해도 된다.
 
 ```javascript
 module.exports = {

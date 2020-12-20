@@ -37,9 +37,7 @@ test("spyOn으로 console.log를 mocking하면, console.log는 다른 함수가 
 Jest에서 mock을 정리할 수 있는 방법은 크게 두 가지가 있다.
 
 - 테스트 코드에서 수동으로 mock을 정리하기
-- `jest.config.js` 설정으로 mock이 알아서 정리되게 하기
-
-`jest.config.js` 를 설정하는 방법은 결국은 수동으로 mock을 정리하는 방법을 자동화하는 것이다. 따라서 수동으로 mock을 정리하는 방법에 대해서 먼저 알아보려고 한다.
+- Jest의 어떤 설정을 활성화해서 mock이 자동으로 정리되게 하기
 
 ## 수동으로 정리하기
 
@@ -48,13 +46,16 @@ Jest에서 테스트 코드에서 수동으로 mock을 정리하는 방법에도
 - `mockFn.mockClear`
 - `mockFn.mockReset`
 - `mockFn.mockRestore`
+
+`mockFn` 은 Jest에서 생성한 mock 함수를 말한다. 참고로 mock 함수를 만드는 방법에도 여러 가지(...)가 있는데, 대표적으로 `jest.fn`, `jest.spyOn`이 있다.
+
+혹은 `jest` 객체에 있는 메서드로 정리할 수도 있다.
+
 - `jest.clearMocks`
 - `jest.resetMocks`
 - `jest.restoreMocks`
 
-`mockFn` 은 Jest에서 생성한 mock 함수를 말한다. 참고로 mock 함수를 생성하는 방법에도 여러가지(...)가 있는데, 대표적으로 `jest.fn`, `jest.spyOn`이 있다.
-
-### `mockFn.mockClear`
+### mockFn.mockClear
 
 `mockFn.mock.calls`와 `mockFn.mock.instances` 배열을 초기화한다. 다음 테스트 케이스를 실행하기 전에 mock 함수를 호출했던 정보를 비우고 싶을 때 유용하다.
 
@@ -90,7 +91,7 @@ test("mock 생성자를 호출한 후 mockClear를 호출하면, mock.instances�
 });
 ```
 
-### `mockFn.mockReset`
+### mockFn.mockReset
 
 이 함수는 `mockFn.mockClear()` 함수가 하는 일을 모두 할 수 있다. 이것에 더해 `mockFn.mockReset`은 mock 함수의 구현(ex. `jest.fn()` 에 넘기는 함수)을 `undefined` 을 반환하는 빈 함수로 초기화한다.
 
@@ -107,9 +108,9 @@ test("mock 함수를 호출한 후 mockReset을 호출하면, mock 함수는 und
 });
 ```
 
-### `mockFn.mockRestore`
+### mockFn.mockRestore
 
-이 함수도 `mockReset`이 그랬던 것처럼 `mockReset` 함수가 하는 일을 모두 할 수 있다. 이것에 더해 `mockFn.mockRestore`는 mocking을 하면서 다른 함수가 된 함수를 다시 원래대로 되돌릴 수 있다. 말로 설명하면 복잡하니, 코드로 살펴보자.
+이 함수도 `mockReset`이 그랬던 것처럼 `mockReset` 함수가 하는 일을 모두 할 수 있다. 이것에 더해 `mockFn.mockRestore`는 mocking 하면서 오염된(?) 함수를 다시 원래대로 되돌릴 수 있다. 말로 설명하면 복잡하니, `mockRestore`가 필요한 이유를 코드로 살펴보자.
 
 ```javascript
 const someModule = { api: () => "origin" };
@@ -123,7 +124,7 @@ test("spyOn으로 테스트 더블을 만든 뒤에, someModule.api는 다른 �
 });
 ```
 
-`jest.spyOn` 은 객체의 메서드를 테스트 대역으로 사용하고 싶을 때 유용하다. 하지만 이 테스트 케이스를 실행하고 나면 `console.log` 는 다른 함수가 된다. 정리해주지 않으면 다음 테스트 케이스에서 의도하지 않은 결과가 나타날 수도 있다.
+`jest.spyOn` 은 객체의 메서드를 테스트 대역으로 사용하고 싶을 때 유용하다. 하지만 이 테스트 케이스를 실행하고 나면 `console.log` 는 다른 함수가 된다. 정리해주지 않으면 다음 테스트 케이스에서 의도하지 않은 결과가 나타날 수도 있다. 만약 객체의 메서드를 mocking했다면 `mockRestore`를 호출하여 원래대로 되돌려줘야 한다.
 
 ```javascript
 const someModule = { api: () => "origin" };
@@ -183,7 +184,7 @@ Jest에서 제공하는 객체인 `jest`를 활용하면 `mockFn` 에서 일일�
 - `jest.resetAllMocks` : 모든 mock 함수에서 `mockFn.resetAllMocks` 을 호출하는 것과 동일하다.
 - `jest.restoreAllMocks` : 모든 mock 함수에서 `mockFn.restoreAllMocks` 을 호출하는 것과 동일하다.
 
-## 알아서 정리시키기
+## 자동으로 정리하기
 
 확실히 `jest.clearAllMocks`, `jest.resetAllMocks`, `jest.restoreAllMocks` 를 호출하는 것이 `mockFn` 의 메서드를 직접 호출하는 것보다는 쉬운 방법이다. 하지만 이 방법도 `afterEach`, `beforeEach` 와 같은 방법으로 테스트 케이스가 실행되기 전이나 후에 호출해줘야 하는 번거로움이 있다.
 

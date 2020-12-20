@@ -217,4 +217,4 @@ module.exports = {
 ## 참고
 
 - Jest : [https://jestjs.io/docs/en/jest-object,](https://jestjs.io/docs/en/jest-object) [https://jestjs.io/docs/en/mock-function-api](https://jestjs.io/docs/en/mock-function-api)
-- Github Issue : [mockClear vs mockReset vs mockRestore]()
+- Github Issue : [mockClear vs mockReset vs mockRestore](https://github.com/facebook/jest/issues/5143)
